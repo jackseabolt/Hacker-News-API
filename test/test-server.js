@@ -55,7 +55,16 @@ it("on POST request, it returns 201 and return new object", function(){
       res.body.id.should.not.be.null; 
       res.body.should.deep.equal(Object.assign(newItem, {id: res.body.id, votes: res.body.votes}));
     }); 
-})
+}); 
+
+it("on PUT request, it returns 204", function(){
+  console.log("PUT test is running"); 
+  return chai.request(app)
+    .put('/api/stories/1')
+    .then(function(res){
+      res.should.have.status(204); 
+    }); 
+}); 
 
 
   // describe('Starter Test Suite', function () {
