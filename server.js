@@ -56,6 +56,18 @@ app.get('/api/stories', (req, res) => {
     }); 
 }); 
 
+app.put('/api/stories/:id', (req, res) => {
+  knex('posts')
+    .where({ id: req.params.id})
+    .update({
+      votes: knex.raw('votes + 1')
+    })
+    .then(response => {
+      console.log(response);
+      res.sendStatus(204);
+    })
+}); 
+
 app.post('/api/stories', (req, res) => {
   //set var equal to array of strings of required fields: title, url
   const requiredField = ['title', 'url'];
@@ -87,7 +99,7 @@ app.post('/api/stories', (req, res) => {
   .returning(['id', 'title', 'url', 'votes'])
   .insert(newPost)
   .then(response => {
-    res.status(201).json(response);
+    res.status(201).json(response[0]);
   })
 })
 

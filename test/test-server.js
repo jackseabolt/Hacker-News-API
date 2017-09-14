@@ -13,24 +13,57 @@ describe('Hacker News API', function () {
     return runServer();
   });
   
-  beforeEach(function () {
+  // beforeEach(function () {
 
-  });
+  // });
 
-  afterEach(function () {
+  // afterEach(function () {
 
-  });
+  // });
   
   after(function () {
     return closeServer();
   });
 
-  describe('Starter Test Suite', function () {
+  it("on GET requests, it returns all data from posts", function(){ 
+    console.log("GET test running"); 
+    return chai.request(app)
+      .get('/api/stories')
+      .then(function(res){
+        res.should.have.status(200);
+        res.should.be.json;
+        res.body.should.be.a('array'); 
+        res.body.length.should.be.above(0); 
+        res.body.forEach(function(item){
+          item.should.be.a('object'); 
+          item.should.have.all.keys('id', 'votes', 'title', 'url' ); 
+        }); 
+      });
+  }); 
+
+it("on POST request, it returns 201 and return new object", function(){
+  console.log("POST test is running"); 
+  const newItem = {title: 'my test title', url: 'www.test.com'}; 
+  return chai.request(app)
+    .post('/api/stories')
+    .send(newItem)
+    .then(function(res){ 
+      res.should.have.status(201);
+      res.should.be.json; 
+      res.body.should.be.a('object')
+      res.body.should.include.keys('id', 'title', 'url', 'votes'); 
+      res.body.id.should.not.be.null; 
+      res.body.should.deep.equal(Object.assign(newItem, {id: res.body.id, votes: res.body.votes}));
+    }); 
+})
+
+
+  // describe('Starter Test Suite', function () {
     
-    it('should be true', function () {
-      true.should.be.true;
-    });
+  //   it('should be true', function () {
+  //     true.should.be.true;
+  //   });
     
-  });
+  // });
 
 }); 
