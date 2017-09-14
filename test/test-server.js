@@ -59,12 +59,25 @@ it("on POST request, it returns 201 and return new object", function(){
 
 it("on PUT request, it returns 204", function(){
   console.log("PUT test is running"); 
-  return chai.request(app)
-    .put('/api/stories/1')
-    .then(function(res){
-      res.should.have.status(204); 
-    }); 
-}); 
+  const testData = [1,2,3]; 
+  testData.forEach(function(id){
+    return chai.request(app)
+      .put(`/api/stories/${id}`)
+      .then(function(res){
+        res.should.have.status(204); 
+      }); 
+  }); 
+});
+
+// PREVIOUS PUT TEST
+// it("on PUT request, it returns 204", function(){
+//   console.log("PUT test is running"); 
+//   return chai.request(app)
+//     .put('/api/stories/1')
+//     .then(function(res){
+//       res.should.have.status(204); 
+//     }); 
+// }); 
 
 
   // describe('Starter Test Suite', function () {

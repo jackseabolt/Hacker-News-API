@@ -66,7 +66,11 @@ app.put('/api/stories/:id', (req, res) => {
       console.log(response);
       res.sendStatus(204);
     })
-}); 
+})
+// NOT WORKING
+// .on("error", err => {
+//   res.status(500).send(err); 
+// }); 
 
 app.post('/api/stories', (req, res) => {
   //set var equal to array of strings of required fields: title, url
