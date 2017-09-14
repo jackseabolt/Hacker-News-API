@@ -46,7 +46,17 @@ if(require.main === module) {
 	runServer().catch(err => console.err(err)); 
 }
 
-app.post('/api/stories', (req, res)=>{
+app.get('/api/stories', (req, res) => {
+  knex('posts')
+    .limit(20)
+    .select('id', 'title', 'url', 'votes')
+    .then((response) => {
+      console.log(response)
+      res.status(200).json(response)
+    }); 
+}); 
+
+app.post('/api/stories', (req, res) => {
   //set var equal to array of strings of required fields: title, url
   const requiredField = ['title', 'url'];
   //iterate through arr and set field = requiredfield[i]
@@ -58,7 +68,6 @@ app.post('/api/stories', (req, res)=>{
     }
     console.log('everything working');
   })
-
   // for (let i=0; i< requiredField.length; i++){
   //   const field = requiredField[i]
   //   //if field isn't in the request
@@ -70,8 +79,6 @@ app.post('/api/stories', (req, res)=>{
   //   }
   //   console.log('everything working');
   // }
-    
-  
   newPost = {
     title: req.body.title,
     url: req.body.url
