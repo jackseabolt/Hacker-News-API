@@ -46,4 +46,45 @@ if(require.main === module) {
 	runServer().catch(err => console.err(err)); 
 }
 
+app.post('/api/stories', (req, res)=>{
+  //set var equal to array of strings of required fields: title, url
+  const requiredField = ['title', 'url'];
+  //iterate through arr and set field = requiredfield[i]
+  requiredField.forEach(field=> {
+    if(!(field) in req.body){
+    const message = `Missing ${field}`;
+      console.error(message);
+      res.status(400).send(message);
+    }
+    console.log('everything working');
+  })
+
+  // for (let i=0; i< requiredField.length; i++){
+  //   const field = requiredField[i]
+  //   //if field isn't in the request
+  //   if(!(field in req.body)){
+  //     //send error message
+  //     const message = `Missing ${field}`;
+  //     console.error(message);
+  //     res.status(400).send(message);
+  //   }
+  //   console.log('everything working');
+  // }
+    
+  
+  newPost = {
+    title: req.body.title,
+    url: req.body.url
+  }
+  knex('posts')
+  .returning(['id', 'title', 'url', 'votes'])
+  .insert(newPost)
+  .then(response => {
+    res.status(201).json(response);
+  })
+})
+
+
+
+
 module.exports = {app, runServer, closeServer};
