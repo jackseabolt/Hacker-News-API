@@ -47,12 +47,31 @@ if(require.main === module) {
 }
 
 app.get('/api/stories', (req, res) => {
-  knex('posts')
+  knex.select('news.id','news.title', 'news.url', 'news.votes', 'tags.tag')
+    .from('news')  
     .limit(20)
-    .select('id', 'title', 'url', 'votes')
-    .then((response) => {
-      console.log(response)
-      res.status(200).json(response)
+    .innerJoin('news_tags', 'news.id', 'news_tags.news_id')
+    .innerJoin('tags', 'news_tags.tags_id', 'tags.id')
+    .then(results => {
+      console.log(JSON.stringify(results, null, 2)); 
+      const hydrated = [], lookup = {}; 
+      for(let story of results){
+        if(!lookup[story.id]) {
+          lookup[story.id] = {
+            id: story.id, 
+            title: story.title, 
+            url: story.url, 
+            votes: story.values, 
+            tags: []
+          }
+          hydrated.push(lookup[story.id]);
+        } 
+        lookup[story.id].tags.push({
+          id: story.tagId, 
+          tag: story.tag
+        }); 
+      }
+      res.status(200).json(hydrated); 
     }); 
 }); 
 
@@ -81,30 +100,23 @@ app.post('/api/stories', (req, res) => {
     const message = `Missing ${field}`;
       console.error(message);
       res.status(400).send(message);
+      return; 
     }
-    console.log('everything working');
   })
-  // for (let i=0; i< requiredField.length; i++){
-  //   const field = requiredField[i]
-  //   //if field isn't in the request
-  //   if(!(field in req.body)){
-  //     //send error message
-  //     const message = `Missing ${field}`;
-  //     console.error(message);
-  //     res.status(400).send(message);
-  //   }
-  //   console.log('everything working');
-  // }
-  newPost = {
-    title: req.body.title,
-    url: req.body.url
-  }
-  knex('posts')
-  .returning(['id', 'title', 'url', 'votes'])
-  .insert(newPost)
-  .then(response => {
-    res.status(201).json(response[0]);
-  })
+  let newId; 
+  knex
+    .insert({
+      title: req.body.title,
+      url: req.body.url
+    })
+    .into('news')
+    .returning('id')
+    .then(([id]) => {
+      newId = id; 
+      let promises = []; 
+
+      req.body.tags.
+    })
 })
 
 
