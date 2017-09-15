@@ -114,10 +114,25 @@ app.post('/api/stories', (req, res) => {
     .then(([id]) => {
       newId = id; 
       let promises = []; 
-
-      req.body.tags.
+      // IF has tags, do this. Not a required field ^, optional
+      req.body.tags.forEach(tag => {
+        const promise = knex('news_tags')
+          .insert({
+            news_id: newId, 
+            tags_id: tag
+          })
+        promises.push(promise);
+      }); 
+      return Promise.all(promises); 
     })
-})
+    .then(() => {
+      res.sendStatus(201)
+    })
+    .catch(err => {
+      console.error(err); 
+      res.sendStatus(500); 
+    })
+});
 
 
 
