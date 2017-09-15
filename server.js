@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const {DATABASE, PORT} = require('./config');
 const knex = require('knex')(DATABASE);
+const apiStoriesRouter = require("./routers/apiStoriesRouter"); 
 
 app.use(morgan('common'));
 app.use(bodyParser.json());
